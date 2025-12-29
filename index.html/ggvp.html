@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>База отдыха "Бобровый угол" - Челябинская область</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #1b4d1e;
+            --secondary-color: #2e7d32;
+            --accent-color: #a1887f;
+            --light-color: #f8f5f0;
+            --dark-color: #1a1a1a;
+            --status-available: #4CAF50;
+            --status-booked: #f44336;
+            --status-rented: #FF9800;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Шапка */
+        header {
+            background: linear-gradient(rgba(27, 77, 30, 0.85), rgba(27, 77, 30, 0.85)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-color);
+        }
+        
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--light-color);
+        }
+        
+        .location-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        
+        /* Основной контент */
+        .main-content {
+            padding: 40px 0;
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+        
+        /* Редактируемые текстовые блоки */
+        .editable-text {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .editable-text:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .editable-text h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .editable-text p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .edit-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .edit-btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .edit-controls {
+            display: none;
+            margin-top: 15px;
+        }
+        
+        .save-btn, .cancel-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+        
+        .save-btn {
+            background-color: var(--status-available);
+            color: white;
+        }
+        
+        .cancel-btn {
+            background-color: #ccc;
+            color: #333;
+        }
+        
+        .edit-textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        
+        /* Карточки домов */
+        .houses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .house-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .house-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .house-image {
+            height: 200px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .house-status {
+            position: absolute;
+            top: 15px;
+            right: 0;
+            padding: 5px 15px;
+            color: white;
+            font-weight: bold;
+            border-radius: 3px 0 0 3px;
+            font-size: 0.9rem;
+        }
+        
+        .status-available {
+            background-color: var(--status-available);
+        }
+        
+        .status-booked {
+            background-color: var(--status-booked);
+        }
+        
+        .status-rented {
+            background-color: var(--status-rented);
+        }
+        
+        .house-info {
+            padding: 20px;
+        }
+        
+        .house-number {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .house-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .house-details {
+            list-style-type: none;
+            margin-bottom: 15px;
+        }
+        
+        .house-details li {
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        .house-details li i {
+            color: var(--accent-color);
+            margin-right: 8px;
+            width: 20px;
+        }
+        
+        /* Панель управления */
+        .controls-panel {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        .controls-panel h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .status-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .status-select {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+            font-size: 1rem;
+            min-width: 180px;
+        }
+        
+        .update-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .update-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        /* Подвал */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .contact-info {
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .houses-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-controls {
+                flex-direction: column;
+            }
+            
+            .status-select {
+                width: 100%;
+            }
+        }
+        
+        .instructions {
+            background-color: #e8f5e9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--status-available);
+        }
+        
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        /* Стиль для однотипных домов */
+        .uniform-houses .house-card {
+            border-top: 5px solid var(--accent-color);
+        }
+        
+        .location-features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            min-width: 200px;
+        }
+        
+        .feature i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-right: 15px;
+        }
+        
+        .feature-text {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header>
+        <div class="container header-content">
+            <h1>Бобровый угол</h1>
+            <p class="tagline">База отдыха в сосновом лесу Челябинской области</p>
+            <p>Уютные двухэтажные деревянные дома для вашего отдыха на природе</p>
+            <div class="location-badge">
+                <i class="fas fa-map-marker-alt"></i> Челябинская область, окрестности озера Тургояк
+            </div>
+        </div>
+    </header>
+    
+    <div class="container main-content">
+        <!-- Инструкция -->
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Как использовать сайт</h3>
+            <ul>
+                <li>Нажмите кнопку "Редактировать" под любым текстом, чтобы изменить его содержимое</li>
+                <li>Для каждого дома можно изменить статус в панели управления внизу</li>
+                <li>Все изменения сохраняются в вашем браузере и остаются после обновления страницы</li>
+            </ul>
+        </div>
+        
+        <!-- Особенности локации -->
+        <div class="location-features">
+            <div class="feature">
+                <i class="fas fa-tree"></i>
+                <div class="feature-text">Сосновый лес</div>
+            </div>
+            <div class="feature">
+                <i class="fas fa-water"></i>
+                <div class="feature-text">Озеро Тургояк</div>
+            </div>
+            <div class="feature">
+                <i class="fas fa-home"></i>
+                <div class="feature-text">7 двухэтажных домов</div>
+            </div>
+            <div class="feature">
+                <i class="fas fa-wifi"></i>
+                <div class="feature-text">Wi-Fi на всей территории</div>
+            </div>
+        </div>
+        
+        <!-- Редактируемое приветствие -->
+        <section>
+            <h2 class="section-title">Добро пожаловать в "Бобровый угол"</h2>
+            
+            <div class="editable-text">
+                <h3>Отдых в сердце Южного Урала</h3>
+                <p id="welcome-text">База отдыха "Бобровый угол" расположена в живописном сосновом бору Челябинской области, вблизи знаменитого озера Тургояк. Это идеальное место для тех, кто хочет отдохнуть от городской суеты, насладиться чистейшим воздухом, напоенным ароматом хвои, и провести время в гармонии с природой. На территории базы расположены 7 уютных двухэтажных деревянных домов, построенных в едином стиле из экологически чистых материалов.</p>
+                <button class="edit-btn" onclick="enableEdit('welcome-text', 'welcome-controls')">Редактировать текст</button>
+                <div class="edit-controls" id="welcome-controls">
+                    <textarea class="edit-textarea" id="welcome-textarea">База отдыха "Бобровый угол" расположена в живописном сосновом бору Челябинской области, вблизи знаменитого озера Тургояк. Это идеальное место для тех, кто хочет отдохнуть от городской суеты, насладиться чистейшим воздухом, напоенным ароматом хвои, и провести время в гармонии с природой. На территории базы расположены 7 уютных двухэтажных деревянных домов, построенных в едином стиле из экологически чистых материалов.</textarea>
+                    <button class="save-btn" onclick="saveText('welcome-text', 'welcome-textarea', 'welcome-controls')">Сохранить</button>
+                    <button class="cancel-btn" onclick="cancelEdit('welcome-text', 'welcome-textarea', 'welcome-controls')">Отмена</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Редактируемая информация о домах -->
+        <section>
+            <h2 class="section-title">Наши двухэтажные дома</h2>
+            
+            <div class="editable-text">
+                <h3>Особенности домов</h3>
+                <p id="houses-text">Все дома на базе отдыха "Бобровый угол" двухэтажные, построены из оцилиндрованного бревна по единому проекту. Каждый дом рассчитан на комфортное проживание 4-6 человек. На первом этаже расположены просторная гостиная с камином, полностью оборудованная кухня и санузел. На втором этаже - две уютные спальни. Дома оборудованы современной техникой, мебелью из натурального дерева и имеют террасу с видом на лес.</p>
+                <button class="edit-btn" onclick="enableEdit('houses-text', 'houses-controls')">Редактировать текст</button>
+                <div class="edit-controls" id="houses-controls">
+                    <textarea class="edit-textarea" id="houses-textarea">Все дома на базе отдыха "Бобровый угол" двухэтажные, построены из оцилиндрованного бревна по единому проекту. Каждый дом рассчитан на комфортное проживание 4-6 человек. На первом этаже расположены просторная гостиная с камином, полностью оборудованная кухня и санузел. На втором этаже - две уютные спальни. Дома оборудованы современной техникой, мебелью из натурального дерева и имеют террасу с видом на лес.</textarea>
+                    <button class="save-btn" onclick="saveText('houses-text', 'houses-textarea', 'houses-controls')">Сохранить</button>
+                    <button class="cancel-btn" onclick="cancelEdit('houses-text', 'houses-textarea', 'houses-controls')">Отмена</button>
+                </div>
+            </div>
+            
+            <!-- Карточки домов -->
+            <div class="houses-container uniform-houses" id="houses-container">
+                <!-- Дома будут загружены через JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Панель управления статусами -->
+        <section class="controls-panel">
+            <h3>Управление статусами домов</h3>
+            <p>Используйте эту панель для изменения статуса любого дома. Выберите дом и установите нужный статус.</p>
+            
+            <div class="status-controls">
+                <select id="house-select" class="status-select">
+                    <option value="">Выберите дом</option>
+                    <!-- Опции будут добавлены через JavaScript -->
+                </select>
+                
+                <select id="status-select" class="status-select">
+                    <option value="">Выберите статус</option>
+                    <option value="available">Сдается (доступен)</option>
+                    <option value="booked">Забронирован</option>
+                    <option value="rented">Сдан (арендован)</option>
+                </select>
+                
+                <button class="update-btn" onclick="updateHouseStatus()">Обновить статус</button>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Подвал сайта -->
+    <footer>
+        <div class="container footer-content">
+            <h3>База отдыха "Бобровый угол"</h3>
+            <div class="contact-info">
+                <p><i class="fas fa-map-marker-alt"></i> Челябинская область, окрестности озера Тургояк</p>
+                <p><i class="fas fa-phone"></i> +7 (351) 123-45-67</p>
+                <p><i class="fas fa-envelope"></i> info@bobrovyi-ugol-chel.ru</p>
+                <p><i class="fas fa-car"></i> 120 км от Челябинска, 25 км от Миасса</p>
+            </div>
+            <p style="margin-top: 20px;">© 2023 База отдыха "Бобровый угол". Все права защищены.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Данные о домах - все однотипные двухэтажные дома в лесу
+        const housesData = [
+            {
+                id: 1,
+                number: "Дом №1",
+                title: "",
+                image: "https://static.tildacdn.com/tild6265-6630-4739-b338-363065626336/IMG_1364.JPG",
+                status: "available",
+                details: ["2 этажа", "4-6 спальных мест", "Камин", "Терраса", "Вид на лес", "Полная кухня"]
+            },
+            {
+                id: 2,
+                number: "Дом №2",
+                title: "",
+                image: "https://avatars.mds.yandex.net/get-altay/16386092/2a00000199bfc745426a467d7f1da290b860/orig",
+                status: "booked",
+                details: ["2 этажа", "4-6 спальных мест", "Камин", "Терраса", "Вид на лес", "Полная кухня"]
+            },
+            {
+                id: 3,
+                number: "Дом №3",
+                title: "",
+                image: "https://avatars.mds.yandex.net/get-altay/16417401/2a00000199d481f51b32f1ab28c105967680/XXL_height",
+                status: "rented",
+                details: ["2 этажа", "4 спальных места", "Камин", "Терраса", "Вид на лес", "Полная кухня"]
+            },
+            {
+                id: 4,
+                number: "Дом №4",
+                title: "",
+                image: "https://avatars.mds.yandex.net/get-altay/9916116/2a000001885d2d27aed60e8c2811d195dac9/orig",
+                status: "available",
+                details: ["2 этажа", "4-6 спальных мест", "Камин", "Терраса", "Вид на лес", "Полная кухня"]
+            },
+            {
+                id: 5,
+                number: "Дом №5",
+                title: "",
+                image: "https://avatars.mds.yandex.net/get-altay/11373142/2a000001902aff89acf353e117e8cc80120c/L_height",
+                status: "booked",
+                details: ["2 этажа", "4-6 спальных мест", "Камин", "Терраса", "Вид на лес", "Полная кухня"]
+            },
+            {
+                id: 6,
+                number: "Дом №6",
+                title: "",
+                image: "https://avatars.mds.yandex.net/get-altay/1001354/2a00000187c2fb1e5c076486014c4edbe012/L",
+                status: "available",
+                details: ["2 этажа", "4-6 спальных мест", "Камин", "Терраса", "Вид на лес", "Полная кухня"]
+            },
+            {
+                id: 7,
+                number: "Дом №7",
+                title: "",
+                image: "https://avatars.mds.yandex.net/get-altay/13072111/2a000001901b63b365a92d8e407a80416ddc/L_height",
+                status: "rented",
+                details: ["2 этажа", "4-6 спальных мест", "Камин", "Терраса", "Вид на лес", "Полная кухня"]
+            }
+        ];
+
+        // Функция для получения статуса в текстовом формате
+        function getStatusText(statusCode) {
+            switch(statusCode) {
+                case 'available': return 'Сдается';
+                case 'booked': return 'Забронирован';
+                case 'rented': return 'Сдан';
+                default: return 'Неизвестно';
+            }
+        }
+
+        // Функция для получения класса статуса
+        function getStatusClass(statusCode) {
+            switch(statusCode) {
+                case 'available': return 'status-available';
+                case 'booked': return 'status-booked';
+                case 'rented': return 'status-rented';
+                default: return '';
+            }
+        }
+
+        // Загрузка данных из localStorage
+        function loadFromStorage() {
+            // Загружаем тексты
+            const welcomeText = localStorage.getItem('bobrovyi-welcome-text');
+            if (welcomeText) {
+                document.getElementById('welcome-text').textContent = welcomeText;
+            }
+            
+            const housesText = localStorage.getItem('bobrovyi-houses-text');
+            if (housesText) {
+                document.getElementById('houses-text').textContent = housesText;
+            }
+            
+            // Загружаем статусы домов
+            const savedHouses = localStorage.getItem('bobrovyi-houses-data');
+            if (savedHouses) {
+                const parsedHouses = JSON.parse(savedHouses);
+                parsedHouses.forEach((savedHouse, index) => {
+                    if (index < housesData.length) {
+                        housesData[index].status = savedHouse.status;
+                    }
+                });
+            }
+        }
+
+        // Сохранение данных в localStorage
+        function saveToStorage() {
+            // Сохраняем тексты
+            localStorage.setItem('bobrovyi-welcome-text', document.getElementById('welcome-text').textContent);
+            localStorage.setItem('bobrovyi-houses-text', document.getElementById('houses-text').textContent);
+            
+            // Сохраняем статусы домов
+            localStorage.setItem('bobrovyi-houses-data', JSON.stringify(housesData));
+        }
+
+        // Функция для отображения домов
+        function renderHouses() {
+            const container = document.getElementById('houses-container');
+            const houseSelect = document.getElementById('house-select');
+            
+            // Очищаем контейнеры
+            container.innerHTML = '';
+            houseSelect.innerHTML = '<option value="">Выберите дом</option>';
+            
+            // Добавляем каждый дом
+            housesData.forEach(house => {
+                // Создаем карточку дома
+                const houseCard = document.createElement('div');
+                houseCard.className = 'house-card';
+                houseCard.innerHTML = `
+                    <div class="house-image" style="background-image: url('${house.image}')">
+                        <div class="house-status ${getStatusClass(house.status)}">${getStatusText(house.status)}</div>
+                    </div>
+                    <div class="house-info">
+                        <div class="house-number">${house.number}</div>
+                        <ul class="house-details">
+                            ${house.details.map(detail => `<li><i class="fas fa-check"></i> ${detail}</li>`).join('')}
+                        </ul>
+                        <div style="font-style: italic; color: #888; font-size: 0.9rem; margin-top: 10px;">
+                            <i class="fas fa-home"></i> Двухэтажный дом в сосновом лесу
+                        </div>
+                    </div>
+                `;
+                container.appendChild(houseCard);
+                
+                // Добавляем опцию в выпадающий список
+                const option = document.createElement('option');
+                option.value = house.id;
+                option.textContent = `${house.number} (${getStatusText(house.status)})`;
+                houseSelect.appendChild(option);
+            });
+        }
+
+        // Функции для редактирования текста
+        function enableEdit(textId, controlsId) {
+            const textElement = document.getElementById(textId);
+            const textarea = document.getElementById(textId + 'textarea');
+            const controls = document.getElementById(controlsId);
+            
+            textarea.value = textElement.textContent;
+            controls.style.display = 'block';
+        }
+
+        function saveText(textId, textareaId, controlsId) {
+            const textElement = document.getElementById(textId);
+            const textarea = document.getElementById(textareaId);
+            const controls = document.getElementById(controlsId);
+            
+            textElement.textContent = textarea.value;
+            controls.style.display = 'none';
+            
+            // Сохраняем в хранилище
+            saveToStorage();
+        }
+
+        function cancelEdit(textId, textareaId, controlsId) {
+            const controls = document.getElementById(controlsId);
+            controls.style.display = 'none';
+        }
+
+        // Функция для обновления статуса дома
+        function updateHouseStatus() {
+            const houseSelect = document.getElementById('house-select');
+            const statusSelect = document.getElementById('status-select');
+            
+            const houseId = parseInt(houseSelect.value);
+            const newStatus = statusSelect.value;
+            
+            if (!houseId || !newStatus) {
+                alert('Пожалуйста, выберите дом и статус');
+                return;
+            }
+            
+            // Находим дом и обновляем статус
+            const houseIndex = housesData.findIndex(house => house.id === houseId);
+            if (houseIndex !== -1) {
+                housesData[houseIndex].status = newStatus;
+                
+                // Перерисовываем дома
+                renderHouses();
+                
+                // Сохраняем в хранилище
+                saveToStorage();
+                
+                // Сбрасываем выбранные значения
+                houseSelect.value = '';
+                statusSelect.value = '';
+                
+                alert(`Статус дома ${housesData[houseIndex].number} успешно обновлен на "${getStatusText(newStatus)}"`);
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загружаем данные из localStorage
+            loadFromStorage();
+            
+            // Отображаем дома
+            renderHouses();
+            
+            // Устанавливаем текст в textarea для редактирования
+            document.getElementById('welcome-textarea').value = document.getElementById('welcome-text').textContent;
+            document.getElementById('houses-textarea').value = document.getElementById('houses-text').textContent;
+        });
+    </script>
+</body>
+</html>
